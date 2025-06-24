@@ -6,6 +6,7 @@
 </head>
 
 <style>
+
     body{
     margin: 0%;
     padding: 0%;
@@ -194,6 +195,9 @@ img{
                 <label class="instruction2">Scan Barcode</label>
             </div>
             <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
+
+            <!-- ✅ Barcode result display -->
+            <p id="barcodeResult" style="font-size: 20px; font-weight: bold; margin-top: 20px;"></p>
         </div>
     </div>
 
@@ -207,6 +211,7 @@ img{
     <script>
       const startButton = document.getElementById("startButton");
       const readerElement = document.getElementById("reader");
+      const barcodeResult = document.getElementById("barcodeResult");
 
       let html5QrCode;
 
@@ -226,13 +231,15 @@ img{
           (decodedText, decodedResult) => {
             console.log("Barcode:", decodedText);
 
+            // ✅ Display barcode value on page
+            barcodeResult.innerText = "Scanned Barcode: " + decodedText;
+
             // Stop scanning after success
             html5QrCode.stop().then(() => {
               // Hide scanner view
               readerElement.style.display = "none";
 
-              // ✅ Do something with the scanned value:
-              // For example: Redirect with barcode as query parameter
+              // ✅ Optional: redirect to another page with barcode as query param
               // window.location.href = "nextpage.html?barcode=" + encodeURIComponent(decodedText);
 
             }).catch(err => {
