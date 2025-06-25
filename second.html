@@ -1,0 +1,236 @@
+<html>
+    <head>
+        <title>Copycat</title>
+
+    </head>
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        body{
+    margin: 0%;
+    padding: 0%;
+    background-color: #d9d8cc;
+}
+
+/* Page 1 */
+
+.start{
+    display: inline-block;
+    padding: 5% 23%;
+    border: solid 10px black;
+    background-color: #ffcc00;
+    color: black;
+    border-radius: 300px;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+
+    font-size: 80px;
+    margin-top: 7%;
+    margin-left: 14%;
+    margin-bottom: 5%;
+}
+
+.container{
+    margin-top: 15%;
+    margin-left: 8%;
+    border-radius: 100px;
+    border:solid 10px black;
+    background-color: white;
+    height: 27%;
+    width: 83%;
+}
+
+
+.instruction{
+    font-size: 450%;
+    margin-left: 18%;
+}
+
+.instruction2{
+    font-size: 450%;
+    margin-left: 20%;
+}
+
+/* Page 2 */
+
+/* Header Section */
+
+.header{
+    background-color: #ffcc00;
+}
+
+img{
+    height: 200px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-left: 70px;
+} 
+
+.header{
+    border-bottom:solid 7px black ;
+}
+.combine{
+
+    display: inline-flex;
+}
+
+.name{
+    margin-left: 55px;
+    margin-top: 80px;
+    font-size:580%;
+}
+
+/* Body section or Button Section */
+
+.down{
+    margin-top: -5%;
+
+}
+
+.box{
+    margin-top: 33%;
+    margin-left: 8%;
+    border-radius: 100px;
+    border:solid 10px black;
+    background-color: white;
+    height: 64%;
+    width: 83%;
+}
+
+.Upload {
+  display: inline-block;
+  padding: 5% 23%;
+  border: solid 10px black;
+  background-color: #ffcc00;
+  color: black;
+  border-radius: 300px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+
+  font-size: 80px;
+  margin-top: 7%;
+  margin-left: 8%;
+}
+
+.page{
+    padding: 10px 20%;
+    display: grid;
+    border: solid 10px black;
+    background-color: #ffcc00;
+    color: black;
+    border-radius: 125px;   
+    text-align: center; 
+    font-size: 80px;
+    margin-top: 9%;
+    margin-left: 7%;
+    margin-right: 9%;
+    
+}    
+
+.inpt{
+    height: 100px;
+    width: 200px;
+    border-radius: 40px;
+    text-align: center;
+    margin-left:20%;
+    font-size: 80%;
+}
+
+
+.Upload:hover {
+  background-color: #ffcc00;
+}
+
+.price{
+    display: inline-block;
+    padding: 7% 9%;
+    border: solid 10px black;
+    background-color: #ffcc00;
+    color: black;
+    border-radius: 300px;
+    
+    text-align: center; 
+    font-size: 80px;
+    margin-top: 9%;
+    margin-left: 8%;
+}
+
+.proceed{
+    display: inline-block;
+    padding: 2% 9%;
+    border: solid 6px black;
+    background-color: #289ef3;
+    color: black;
+    border-radius: 300px;
+    cursor: pointer;
+    user-select: none;
+    text-align: center; 
+    font-size: 450%;
+    margin-top: 9%;
+    margin-left: 23%;
+}
+    </style>
+
+    <body>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="combine">
+                <img src="./LOGO.png">
+                <h1 class="name">Copy Cat</h1>
+            </div>
+        </div>
+
+
+        <!-- button section -->
+        <div class="down">
+
+            <div class="box">
+                <!-- <button class="Upload">Upload</button> -->
+                 
+                <div class="Upload" tabindex="0">
+                    <label>Upload</label>
+                </div>
+                <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
+
+                <div class="page" tabindex="1">
+                    <label for="numPages">Number of Pages:</label>
+                    <input class="inpt" type="number" id="numPages" name="numPages" min="1" value="1">
+                </div>
+
+                <div class="price" tabindex="2">
+                    <label><b>2Rs Per page</b></label>
+                </div>
+                
+                <div class="proceed" tabindex="0">
+                    <label>Proceed</label>
+                </div>
+                
+            </div>
+
+            
+
+        </div>
+
+
+    </body>
+
+    <script>
+        const uploadButton = document.querySelector('.Upload');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadButton.addEventListener('click', () => {
+          fileInput.click();
+        });
+
+        // Optional: handle the selected file
+        fileInput.addEventListener('change', () => {
+          if (fileInput.files.length > 0) {
+            alert(`Selected file: ${fileInput.files[0].name}`);
+          }
+        });
+    </script>
+
+</html>
