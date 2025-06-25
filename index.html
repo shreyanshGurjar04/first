@@ -6,7 +6,6 @@
 </head>
 
 <style>
-
     body{
     margin: 0%;
     padding: 0%;
@@ -196,7 +195,6 @@ img{
             </div>
             <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
 
-            <!-- ✅ Barcode result display -->
             <p id="barcodeResult" style="font-size: 20px; font-weight: bold; margin-top: 20px;"></p>
         </div>
     </div>
@@ -212,42 +210,47 @@ img{
       const startButton = document.getElementById("startButton");
       const readerElement = document.getElementById("reader");
       const barcodeResult = document.getElementById("barcodeResult");
-
       let html5QrCode;
 
+      // ✅ Simulated database of valid barcodes
+      const validBarcodes = {
+        "123456789": "User A",
+        "987654321": "User B",
+        "ABC123": "User C"
+      };
+
       startButton.addEventListener("click", function() {
-        // Show the scanner view
         readerElement.style.display = "block";
 
-        // Initialize scanner once
         if (!html5QrCode) {
           html5QrCode = new Html5Qrcode("reader");
         }
 
-        // Start scanning
         html5QrCode.start(
-          { facingMode: "environment" }, // use back camera
+          { facingMode: "environment" },
           { fps: 10, qrbox: 250 },
           (decodedText, decodedResult) => {
             console.log("Barcode:", decodedText);
 
-            // ✅ Display barcode value on page
             barcodeResult.innerText = "Scanned Barcode: " + decodedText;
 
-            // Stop scanning after success
             html5QrCode.stop().then(() => {
-              // Hide scanner view
               readerElement.style.display = "none";
 
-              // ✅ Optional: redirect to another page with barcode as query param
-              // window.location.href = "nextpage.html?barcode=" + encodeURIComponent(decodedText);
+              // ✅ Check barcode against "database"
+              if (validBarcodes.hasOwnProperty(decodedText)) {
+                // Redirect if valid
+                window.location.href = "second.html";
+              } else {
+                // Show error if invalid
+                barcodeResult.innerText = "Invalid barcode: " + decodedText;
+              }
 
             }).catch(err => {
               console.error("Failed to stop scanner: ", err);
             });
           },
           (error) => {
-            // Scanning errors (optional)
             console.log("Scanning error:", error);
           }
         ).catch(err => {
