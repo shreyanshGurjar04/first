@@ -230,26 +230,25 @@ img{
           { facingMode: "environment" },
           { fps: 10, qrbox: 250 },
           (decodedText, decodedResult) => {
-            console.log("Barcode:", decodedText);
+              console.log("Barcode:", decodedText);
+              barcodeResult.innerText = "Scanned Barcode: " + decodedText;
 
-            barcodeResult.innerText = "Scanned Barcode: " + decodedText;
-
-            html5QrCode.stop().then(() => {
-              readerElement.style.display = "none";
-
-              // ✅ Check barcode against "database"
-              if (decodedText.toLowerCase().includes("copycat")) {
+              html5QrCode.stop().then(() => {
+                readerElement.style.display = "none";
+              
+                const cleanedText = decodedText.trim().toLowerCase();
+              
+                if (cleanedText.includes("copycat")) {
                   window.location.href = "second.html";
                 } else {
                   barcodeResult.innerText = "Invalid barcode: " + decodedText;
-                  alert("Please scan the valid CopyCat machine")
+                  alert("Please scan the valid CopyCat machine");
                 }
-
-
-            }).catch(err => {
-              console.error("Failed to stop scanner: ", err);
-            });
-          },
+              
+              }).catch(err => {
+                console.error("Failed to stop scanner: ", err);
+              });
+        },
           (error) => {
             console.log("Scanning error:", error);
           }
