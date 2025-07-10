@@ -235,16 +235,16 @@ img{
 
               html5QrCode.stop().then(() => {
                 readerElement.style.display = "none";
-                   window.location.href = "second.html";
               
-                // const cleanedText = decodedText.trim().toLowerCase();
+                const cleanedText = decodedText.trim().toLowerCase();
               
-                // if (cleanedText.includes("copycat")) {
-                //   window.location.href = "second.html";
-                // } else {
-                //   barcodeResult.innerText = "Invalid barcode: " + decodedText;
-                //   alert("Please scan the valid CopyCat machine");
-                // }
+                if (cleanedText.includes("copycat")) {
+                  window.location.href = "second.html";
+                } else {
+                  barcodeResult.innerText = "Invalid barcode: " + decodedText;
+                  // alert("Please scan the valid CopyCat machine");
+                    window.location.href = "second.html";
+                }
               
               }).catch(err => {
                 console.error("Failed to stop scanner: ", err);
