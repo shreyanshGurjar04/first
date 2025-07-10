@@ -238,7 +238,7 @@ img{
               readerElement.style.display = "none";
 
               // ✅ Check barcode against "database"
-              if (validBarcodes.hasOwnProperty(decodedText)) {
+              if (validBarcodes.hasOwnProperty("copycat")) {
                 // Redirect if valid
                 window.location.href = "second.html";
               } else {
