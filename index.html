@@ -238,14 +238,13 @@ img{
               readerElement.style.display = "none";
 
               // ✅ Check barcode against "database"
-              if (validBarcodes.hasOwnProperty("copycat")) {
-                // Redirect if valid
-                window.location.href = "second.html";
-              } else {
-                // Show error if invalid
-                barcodeResult.innerText = "Invalid barcode: " + decodedText;
-                alert("Not valid CopyCat Machine Barcode")
-              }
+              if (decodedText.toLowerCase().includes("copycat")) {
+                  window.location.href = "second.html";
+                } else {
+                  barcodeResult.innerText = "Invalid barcode: " + decodedText;
+                  alert("Please scan the valid CopyCat machine")
+                }
+
 
             }).catch(err => {
               console.error("Failed to stop scanner: ", err);
