@@ -1,12 +1,12 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Copycat</title>
-
-    </head>
+<head>
+    <title>Copycat</title>
     <link rel="stylesheet" href="./style.css">
+</head>
 
-    <style>
-        body{
+<style>
+    body{
     margin: 0%;
     padding: 0%;
     background-color: #d9d8cc;
@@ -171,66 +171,93 @@ img{
     margin-top: 9%;
     margin-left: 23%;
 }
-    </style>
+</style>
 
-    <body>
+<body>
 
-        <!-- Header -->
-        <div class="header">
-            <div class="combine">
-                <img src="./LOGO.png">
-                <h1 class="name">Copy Cat</h1>
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <div class="combine">
+            <img src="./LOGO.png" alt="Logo">
+            <h1 class="name">Copy Cat</h1>
         </div>
+    </div>
 
-
-        <!-- button section -->
-        <div class="down">
-
-            <div class="box">
-                <!-- <button class="Upload">Upload</button> -->
-                 
-                <div class="Upload" tabindex="0">
-                    <label>Upload</label>
-                </div>
-                <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
-
-                <div class="page" tabindex="1">
-                    <label for="numPages">Number of Copies:</label>
-                    <input class="inpt" type="number" id="numPages" name="numPages" min="1" value="1">
-                </div>
-
-                <div class="price" tabindex="2">
-                    <label><b>2Rs Per page</b></label>
-                </div>
-                
-                <div class="proceed" tabindex="0">
-                    <label>Proceed</label>
-                </div>
-                
+    <!-- Button section -->
+    <div class="down">
+        <div class="container">
+            <div class="start" id="startButton">
+                <label>Start</label>
             </div>
+            <div>
+                <label class="instruction">Press Start and</label>
+                <label class="instruction2">Scan Barcode</label>
+            </div>
+            <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
 
-            
-
+            <p id="barcodeResult" style="font-size: 20px; font-weight: bold; margin-top: 20px;"></p>
         </div>
+    </div>
 
+    <!-- Barcode Scanner view -->
+    <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
 
-    </body>
+    <!-- Barcode Scanner library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
+    <!-- Script -->
     <script>
-        const uploadButton = document.querySelector('.Upload');
-        const fileInput = document.getElementById('fileInput');
+      const startButton = document.getElementById("startButton");
+      const readerElement = document.getElementById("reader");
+      const barcodeResult = document.getElementById("barcodeResult");
+      let html5QrCode;
 
-        uploadButton.addEventListener('click', () => {
-          fileInput.click();
-        });
+      // ✅ Simulated database of valid barcodes
+      const validBarcodes = {
+        "123456789": "User A",
+        "987654321": "User B",
+        "ABC123": "User C"
+      };
 
-        // Optional: handle the selected file
-        fileInput.addEventListener('change', () => {
-          if (fileInput.files.length > 0) {
-            alert(`Selected file: ${fileInput.files[0].name}`);
+      startButton.addEventListener("click", function() {
+        readerElement.style.display = "block";
+
+        if (!html5QrCode) {
+          html5QrCode = new Html5Qrcode("reader");
+        }
+
+        html5QrCode.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (decodedText, decodedResult) => {
+            console.log("Barcode:", decodedText);
+
+            barcodeResult.innerText = "Scanned Barcode: " + decodedText;
+
+            html5QrCode.stop().then(() => {
+              readerElement.style.display = "none";
+
+              // ✅ Check barcode against "database"
+              if (validBarcodes.hasOwnProperty(decodedText)) {
+                // Redirect if valid
+                window.location.href = "second.html";
+              } else {
+                // Show error if invalid
+                barcodeResult.innerText = "Invalid barcode: " + decodedText;
+              }
+
+            }).catch(err => {
+              console.error("Failed to stop scanner: ", err);
+            });
+          },
+          (error) => {
+            console.log("Scanning error:", error);
           }
+        ).catch(err => {
+          console.error("Error starting scanner:", err);
         });
+      });
     </script>
 
+</body>
 </html>
