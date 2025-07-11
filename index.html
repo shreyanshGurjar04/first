@@ -220,39 +220,46 @@ img{
     }
 
     html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 250 },
-      (decodedText, decodedResult) => {
-        console.log("Barcode:", decodedText);
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  (decodedText, decodedResult) => {
+    console.log("Barcode:", decodedText);
 
-        const cleanedText = decodedText.trim(); // ✅ properly clean
-        console.log("Cleaned barcode:", cleanedText);
+    const cleanedText = decodedText.trim();
+    console.log("Cleaned barcode:", cleanedText);
 
-        barcodeResult.innerText = "Scanned Barcode: " + cleanedText;
+    barcodeResult.innerText = "Scanned Barcode: " + cleanedText;
 
-        html5QrCode.stop().then(() => {
-          readerElement.style.display = "none";
+    const regex = /^copycat/i;
 
-          const regex = /^copycat/i; // ✅ starts with copycat, case-insensitive
+    if (regex.test(cleanedText)) {
+      html5QrCode.stop().then(() => {
+        readerElement.style.display = "none";
+        window.location.href = "second.html";
+      }).catch(err => {
+        console.error("Failed to stop scanner: ", err);
+      });
+    } else {
+      // ✅ Show alert immediately BEFORE stopping scanner
+      alert("Guddu this is not valid barcode");
 
-          if (regex.test(cleanedText)) {
-            window.location.href = "second.html";
-          } else {
-            barcodeResult.innerText = "Invalid barcode: " + cleanedText;
-              // alert("This is not valid CopyCat Barcode kindly scan Machine Barcode Only");
-              alert("Guddu is is not valid Barcode");
-          }
+      html5QrCode.stop().then(() => {
+        readerElement.style.display = "none";
+        barcodeResult.innerText = "Invalid barcode: " + cleanedText;
+          alert("Guddu this is not valid barcode");
+      }).catch(err => {
+        console.error("Failed to stop scanner: ", err);
+          alert("Guddu this is not valid barcode");
+      });
+    }
+  },
+  (error) => {
+    console.log("Scanning error:", error);
+  }
+).catch(err => {
+  console.error("Error starting scanner:", err);
+});
 
-        }).catch(err => {
-          console.error("Failed to stop scanner: ", err);
-        });
-      },
-      (error) => {
-        console.log("Scanning error:", error);
-      }
-    ).catch(err => {
-      console.error("Error starting scanner:", err);
-    });
   });
 </script>
 
