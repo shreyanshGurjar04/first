@@ -207,42 +207,39 @@ img{
 
     <!-- Script -->
     <script>
-      const startButton = document.getElementById("startButton");
-      const readerElement = document.getElementById("reader");
-      const barcodeResult = document.getElementById("barcodeResult");
-      let html5QrCode;
+  const startButton = document.getElementById("startButton");
+  const readerElement = document.getElementById("reader");
+  const barcodeResult = document.getElementById("barcodeResult");
+  let html5QrCode;
 
-      // ✅ Simulated database of valid barcodes
-      const validBarcodes = {
-        "123456789": "User A",
-        "987654321": "User B",
-        "ABC123": "User C"
-      };
+  startButton.addEventListener("click", function() {
+    readerElement.style.display = "block";
 
-      startButton.addEventListener("click", function() {
-        readerElement.style.display = "block";
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("reader");
+    }
 
-        if (!html5QrCode) {
-          html5QrCode = new Html5Qrcode("reader");
-        }
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      (decodedText, decodedResult) => {
+        console.log("Barcode:", decodedText);
 
-        html5QrCode.start(
-  { facingMode: "environment" },
-  { fps: 10, qrbox: 250 },
-  (decodedText, decodedResult) => {
-    console.log("Barcode:", decodedText);
-    barcodeResult.innerText = "Scanned Barcode: " + decodedText;
+        const cleanedText = decodedText.trim(); // ✅ properly clean
+        console.log("Cleaned barcode:", cleanedText);
 
-    html5QrCode.stop().then(() => {
-      readerElement.style.display = "none";
+        barcodeResult.innerText = "Scanned Barcode: " + cleanedText;
 
-      const regex = /^copycat/i;
-        if (regex.test(decodedText.trim())) {
-          window.location.href = "second.html";
-        } else {
-          barcodeResult.innerText = "Invalid barcode: " + cleanedText;
-        }
+        html5QrCode.stop().then(() => {
+          readerElement.style.display = "none";
 
+          const regex = /^copycat/i; // ✅ starts with copycat, case-insensitive
+
+          if (regex.test(cleanedText)) {
+            window.location.href = "second.html";
+          } else {
+            barcodeResult.innerText = "Invalid barcode: " + cleanedText;
+          }
 
         }).catch(err => {
           console.error("Failed to stop scanner: ", err);
@@ -254,8 +251,9 @@ img{
     ).catch(err => {
       console.error("Error starting scanner:", err);
     });
-      });
-    </script>
+  });
+</script>
+
 
 </body>
 </html>
