@@ -227,35 +227,35 @@ img{
         }
 
         html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          (decodedText, decodedResult) => {
-              console.log("Barcode:", decodedText);
-              barcodeResult.innerText = "Scanned Barcode: " + decodedText;
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  (decodedText, decodedResult) => {
+    console.log("Barcode:", decodedText);
+    barcodeResult.innerText = "Scanned Barcode: " + decodedText;
 
-              html5QrCode.stop().then(() => {
-                readerElement.style.display = "none";
-              
-                const cleanedText = decodedText.trim().toLowerCase();
-              
-                if (cleanedText.includes("copycat")) {
-                  window.location.href = "second.html";
-                } else {
-                  barcodeResult.innerText = "Invalid barcode: " + decodedText;
-                  // alert("Please scan the valid CopyCat machine");
-                    window.location.href = "second.html";
-                }
-              
-              }).catch(err => {
-                console.error("Failed to stop scanner: ", err);
-              });
-        },
-          (error) => {
-            console.log("Scanning error:", error);
-          }
-        ).catch(err => {
-          console.error("Error starting scanner:", err);
-        });
+    html5QrCode.stop().then(() => {
+      readerElement.style.display = "none";
+
+      const cleanedText = decodedText.trim().toLowerCase();
+
+      if (cleanedText.startsWith("copycat")) {
+        window.location.href = "second.html";
+      } else {
+        barcodeResult.innerText = "Invalid barcode: " + decodedText;
+        // alert("Invalid barcode. Please scan a valid CopyCat machine barcode.");
+        // Do not navigate
+      }
+
+    }).catch(err => {
+      console.error("Failed to stop scanner: ", err);
+    });
+  },
+  (error) => {
+    console.log("Scanning error:", error);
+  }
+).catch(err => {
+  console.error("Error starting scanner:", err);
+});
       });
     </script>
 
