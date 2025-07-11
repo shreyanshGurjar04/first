@@ -236,23 +236,24 @@ img{
     html5QrCode.stop().then(() => {
       readerElement.style.display = "none";
 
-      const regex = /^copycat/i; // ^ means "starts with", i means "case-insensitive"
-    if (regex.test(decodedText.trim())) {
+      const regex = /^copycat/i;
+        if (regex.test(decodedText.trim())) {
           window.location.href = "second.html";
-    } else {
-          barcodeResult.innerText = "Invalid barcode: " + decodedText;
+        } else {
+          barcodeResult.innerText = "Invalid barcode: " + cleanedText;
         }
 
-    }).catch(err => {
-      console.error("Failed to stop scanner: ", err);
+
+        }).catch(err => {
+          console.error("Failed to stop scanner: ", err);
+        });
+      },
+      (error) => {
+        console.log("Scanning error:", error);
+      }
+    ).catch(err => {
+      console.error("Error starting scanner:", err);
     });
-  },
-  (error) => {
-    console.log("Scanning error:", error);
-  }
-).catch(err => {
-  console.error("Error starting scanner:", err);
-});
       });
     </script>
 
