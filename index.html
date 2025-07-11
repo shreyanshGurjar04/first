@@ -236,15 +236,12 @@ img{
     html5QrCode.stop().then(() => {
       readerElement.style.display = "none";
 
-      const cleanedText = decodedText.trim().toLowerCase();
-
-      if (cleanedText.startsWith("copycat")) {
-        window.location.href = "second.html";
-      } else {
-        barcodeResult.innerText = "Invalid barcode: " + decodedText;
-        // alert("Invalid barcode. Please scan a valid CopyCat machine barcode.");
-        // Do not navigate
-      }
+      const regex = /^copycat/i; // ^ means "starts with", i means "case-insensitive"
+    if (regex.test(decodedText.trim())) {
+          window.location.href = "second.html";
+    } else {
+          barcodeResult.innerText = "Invalid barcode: " + decodedText;
+        }
 
     }).catch(err => {
       console.error("Failed to stop scanner: ", err);
