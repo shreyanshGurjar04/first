@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Copycat</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-
-<style>
+  <title>Copycat</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <style>
     body{
     margin: 0%;
     padding: 0%;
     background-color: #d9d8cc;
-}
+    }
 
 /* Page 1 */
 
@@ -40,7 +39,6 @@
     height: 27%;
     width: 83%;
 }
-
 
 .instruction{
     font-size: 450%;
@@ -171,93 +169,139 @@ img{
     margin-top: 9%;
     margin-left: 23%;
 }
-</style>
 
+/* Modal Styles */
+#paymentModal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+#paymentModalContent {
+  background: white;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 200%;
+  max-width: 600px;
+}
+
+#paymentModalContent button {
+  font-size: 80%;
+  padding: 10px 40px;
+  margin: 20px;
+}
+  </style>
+</head>
 <body>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="combine">
-            <img src="./LOGO.png" alt="Logo">
-            <h1 class="name">Copy Cat</h1>
-        </div>
+  <!-- Header -->
+  <div class="header">
+    <div class="combine">
+      <img src="./LOGO.png">
+      <h1 class="name">Copy Cat</h1>
     </div>
+  </div>
 
-    <!-- Button section -->
-    <div class="down">
-        <div class="container">
-            <div class="start" id="startButton">
-                <label>Start</label>
-            </div>
-            <div>
-                <label class="instruction">Press Start and</label>
-                <label class="instruction2">Scan Barcode</label>
-            </div>
-            <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
+  <!-- button section -->
+  <div class="down">
+    <div class="box">
+      <div class="Upload" tabindex="0">
+        <label>Upload</label>
+      </div>
+      <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
 
-            <p id="barcodeResult" style="font-size: 20px; font-weight: bold; margin-top: 20px;"></p>
+      <div class="page" tabindex="1">
+        <label for="numPages">Number of Copies:</label>
+        <input class="inpt" type="number" id="numCopies" name="numCopies" min="1" value="1">
+      </div>
+
+      <div class="price" tabindex="2">
+        <label><b>2Rs Per page</b></label>
+      </div>
+      
+      <div class="proceed" tabindex="0">
+        <label type="Button">Proceed</label>
         </div>
+
     </div>
+  </div>
 
-    <!-- Barcode Scanner view -->
-    <div id="reader" style="width: 300px; height: 300px; display: none;"></div>
+  <!-- Modal -->
+  <div id="paymentModal">
+    <div id="paymentModalContent">
+      <p id="modalMessage"></p>
+      <button id="confirmBtn">Confirm</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
 
-    <!-- Barcode Scanner library -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    const uploadButton = document.querySelector('.Upload');
+    const fileInput = document.getElementById('fileInput');
+    const proceedButton = document.querySelector('.proceed');
 
-    <!-- Script -->
-    <script>
-      const startButton = document.getElementById("startButton");
-      const readerElement = document.getElementById("reader");
-      const barcodeResult = document.getElementById("barcodeResult");
-      let html5QrCode;
+    const paymentModal = document.getElementById('paymentModal');
+    const modalMessage = document.getElementById('modalMessage');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
 
-      // ✅ Simulated database of valid barcodes
-      const validBarcodes = {
-        "123456789": "User A",
-        "987654321": "User B",
-        "ABC123": "User C"
+    let pdfFile = null;
+
+    uploadButton.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        pdfFile = fileInput.files[0];
+        alert(`Selected file: ${pdfFile.name}`);
+      }
+    });
+
+    proceedButton.addEventListener('click', async () => {
+
+      if (!pdfFile) {
+        alert("Please upload a PDF first.");
+        return;
+      }
+
+      const numCopies = parseInt(document.getElementById('numCopies').value);
+      if (numCopies < 1) {
+        alert("Please enter a valid number of copies.");
+        return;
+      }
+
+      // Read PDF pages using PDF.js
+      const fileReader = new FileReader();
+      fileReader.onload = async function() {
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+        const numPages = pdf.numPages;
+
+        const total = numPages * numCopies * 2;
+
+        modalMessage.textContent = `Your PDF has ${numPages} pages.\nNumber of copies: ${numCopies}\nTotal cost: Rs ${total}\nProceed to payment?`;
+        paymentModal.style.display = 'flex';
+
+        confirmBtn.onclick = () => {
+          paymentModal.style.display = 'none';
+          // Redirect to payment gateway, pass amount if needed
+          window.location.href = `https://your-payment-gateway.com?amount=${total}`;
+        };
+
+        cancelBtn.onclick = () => {
+          paymentModal.style.display = 'none';
+        };
       };
 
-      startButton.addEventListener("click", function() {
-        readerElement.style.display = "block";
-
-        if (!html5QrCode) {
-          html5QrCode = new Html5Qrcode("reader");
-        }
-
-        html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          (decodedText, decodedResult) => {
-            console.log("Barcode:", decodedText);
-
-            barcodeResult.innerText = "Scanned Barcode: " + decodedText;
-
-            html5QrCode.stop().then(() => {
-              readerElement.style.display = "none";
-
-              // ✅ Check barcode against "database"
-              if (validBarcodes.hasOwnProperty(decodedText)) {
-                // Redirect if valid
-                window.location.href = "second.html";
-              } else {
-                // Show error if invalid
-                barcodeResult.innerText = "Invalid barcode: " + decodedText;
-              }
-
-            }).catch(err => {
-              console.error("Failed to stop scanner: ", err);
-            });
-          },
-          (error) => {
-            console.log("Scanning error:", error);
-          }
-        ).catch(err => {
-          console.error("Error starting scanner:", err);
-        });
-      });
-    </script>
+      fileReader.readAsArrayBuffer(pdfFile);
+    });
+  </script>
 
 </body>
 </html>
